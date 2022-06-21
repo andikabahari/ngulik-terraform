@@ -1,3 +1,7 @@
+terraform {
+  experiments = [module_variable_optional_attrs]
+}
+
 provider "google" {
   project = "centering-crow-351309"
   region  = "asia-southeast2"
@@ -7,28 +11,14 @@ variable "network_name" {
   description = "Network name"
 }
 
-variable "subnet_01_name" {
-  description = "Name for subnet 01"
-}
-
-variable "subnet_01_ip_cidr_range" {
-  description = "CIDR range for subnet 01"
-}
-
-variable "subnet_01_secondary_name" {
-  description = "Name for secondary subnet 01"
-}
-
-variable "subnet_01_secondary_ip_cidr_range" {
-  description = "Secondary CIDR range for subnet 01"
-}
-
-variable "subnet_02_name" {
-  description = "Name for subnet 02"
-}
-
-variable "subnet_02_ip_cidr_range" {
-  description = "CIDR range for subnet 02"
+variable "subnet" {
+  description = "List of subnet"
+  type = list(object({
+    name            = string
+    range           = string
+    secondary_name  = optional(string)
+    secondary_range = optional(string)
+  }))
 }
 
 resource "google_compute_network" "my_net" {
@@ -37,12 +27,12 @@ resource "google_compute_network" "my_net" {
 }
 
 resource "google_compute_subnetwork" "my_subnet_01" {
-  name          = var.subnet_01_name
-  ip_cidr_range = var.subnet_01_ip_cidr_range
+  name          = var.subnet[0].name
+  ip_cidr_range = var.subnet[0].range
   network       = google_compute_network.my_net.id
   secondary_ip_range {
-    range_name    = var.subnet_01_secondary_name
-    ip_cidr_range = var.subnet_01_secondary_ip_cidr_range
+    range_name    = var.subnet[0].secondary_name
+    ip_cidr_range = var.subnet[0].secondary_range
   }
 }
 
@@ -51,8 +41,8 @@ data "google_compute_network" "default_network" {
 }
 
 resource "google_compute_subnetwork" "my_subnet_02" {
-  name          = var.subnet_02_name
-  ip_cidr_range = var.subnet_02_ip_cidr_range
+  name          = var.subnet[1].name
+  ip_cidr_range = var.subnet[1].range
   network       = data.google_compute_network.default_network.id
 }
 
