@@ -3,29 +3,45 @@ provider "google" {
   region  = "asia-southeast2"
 }
 
+variable "network_name" {
+  description = "Network name"
+}
+
+variable "subnet_01_name" {
+  description = "Name for subnet 01"
+}
+
 variable "subnet_01_ip_cidr_range" {
-  description = "CIDR range for dev subnet 01"
+  description = "CIDR range for subnet 01"
+}
+
+variable "subnet_01_secondary_name" {
+  description = "Name for secondary subnet 01"
 }
 
 variable "subnet_01_secondary_ip_cidr_range" {
-  description = "Secondary CIDR range for dev subnet 01"
+  description = "Secondary CIDR range for subnet 01"
+}
+
+variable "subnet_02_name" {
+  description = "Name for subnet 02"
 }
 
 variable "subnet_02_ip_cidr_range" {
-  description = "CIDR range for dev subnet 02"
+  description = "CIDR range for subnet 02"
 }
 
 resource "google_compute_network" "dev_net" {
-  name                    = "dev-net"
+  name                    = var.network_name
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "dev_subnet_01" {
-  name          = "dev-subnet-01"
+  name          = var.subnet_01_name
   ip_cidr_range = var.subnet_01_ip_cidr_range
   network       = google_compute_network.dev_net.id
   secondary_ip_range {
-    range_name    = "secondary-range-01"
+    range_name    = var.subnet_01_secondary_name
     ip_cidr_range = var.subnet_01_secondary_ip_cidr_range
   }
 }
@@ -35,7 +51,7 @@ data "google_compute_network" "default_network" {
 }
 
 resource "google_compute_subnetwork" "dev_subnet_02" {
-  name          = "dev-subnet-02"
+  name          = var.subnet_02_name
   ip_cidr_range = var.subnet_02_ip_cidr_range
   network       = data.google_compute_network.default_network.id
 }
