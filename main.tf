@@ -27,3 +27,15 @@ resource "google_compute_subnetwork" "dev_subnet_02" {
   ip_cidr_range = "10.110.0.0/16"
   network       = data.google_compute_network.default_network.id
 }
+
+output "dev_net_id" {
+  value = google_compute_network.dev_net.id
+}
+
+output "dev_subnet_01_gateway" {
+  value = google_compute_subnetwork.dev_subnet_01.gateway_address
+}
+
+output "dev_subnet_02_gateway" {
+  value = google_compute_subnetwork.dev_subnet_02.gateway_address
+}
