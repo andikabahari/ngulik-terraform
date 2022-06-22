@@ -5,7 +5,11 @@ terraform {
 provider "google" {
   project     = "centering-crow-351309"
   region      = "asia-southeast2"
-  credentials = "./credentials.json"
+  credentials = var.credentials
+}
+
+variable "credentials" {
+  description = "Service account credentials"
 }
 
 variable "network_name" {
