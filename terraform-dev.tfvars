@@ -1,3 +1,4 @@
+credentials  = "./credentials.json"
 network_name = "dev-net"
 subnet = [
   {
