@@ -3,8 +3,9 @@ terraform {
 }
 
 provider "google" {
-  project = "centering-crow-351309"
-  region  = "asia-southeast2"
+  project     = "centering-crow-351309"
+  region      = "asia-southeast2"
+  credentials = "./credentials.json"
 }
 
 variable "network_name" {
